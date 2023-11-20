@@ -2,32 +2,43 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import CartWidgetComponent from '../CartWidget/CartWidgetComponent';
+import CarWidgetComponent from "../CartWidget/CartWidgetComponent"
+
+import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const NavBarComponent = () => {
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    axios
+    .get('https://dummyjson.com/products/categories')
+    .then((res) => setCategories(res.data))
+    .catch((error) => console.log(error));
+  }, []);
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar bg="dark" expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand href="#home">Work Shop Mirco Arnold</Navbar.Brand>
+        <Navbar.Brand ><Link style={{ textDecoration: "none", color: "tomato"}} to={'/'}>Mirco Arnold WebShop</Link></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Inicio</Nav.Link>
-            <Nav.Link href="#link">Productos</Nav.Link>
-            <NavDropdown title="Menu" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Electrodomesticos</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Indumentaria
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Ofertas</NavDropdown.Item>
-              <NavDropdown.Divider />
+            <NavDropdown title="Mas Info" id="basic-nav-dropdown">
+                {categories.map((category, index) => {
+                  return(
+                    <NavDropdown.Item key={index} > 
+                    <Link to={`/category/${category}`} style={{ textDecoration: "none", color: "tomato"}}>{category}</Link></NavDropdown.Item>
+                  );
+                })}
             </NavDropdown>
           </Nav>
-          <CartWidgetComponent/>
+          <CarWidgetComponent />
         </Navbar.Collapse>
       </Container>
     </Navbar>
-
   );
 }
 
